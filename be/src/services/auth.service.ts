@@ -48,6 +48,6 @@ export class AuthService {
 
     const token = generateToken(user.id, user.email);
 
-    return { token, user };
+    return { token, user }; 
   }
 }

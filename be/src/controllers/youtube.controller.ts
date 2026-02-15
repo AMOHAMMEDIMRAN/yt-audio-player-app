@@ -16,11 +16,10 @@ export class YoutubeController {
 
     const info = await YoutubeService.getVideoInfo(videoUrl);
 
+    const safeTitle = info.title.replace(/[^\w\s-]/gi, "").replace(/\s+/g, "_");
+
     res.setHeader("Content-Type", "audio/mpeg");
-    res.setHeader(
-      "Content-Disposition",
-      `inline; filename="${info.title}.mp3"`,
-    );
+    res.setHeader("Content-Disposition", `inline; filename="${safeTitle}.mp3"`);
 
     const stream = YoutubeService.getAudioStream(videoUrl);
 
@@ -32,5 +31,26 @@ export class YoutubeController {
     });
 
     stream.pipe(res);
+  }
+
+  static async createPlaylist(req: Request, res: Response) {
+    const {playlistName} = req.body;
+    // const userId = req.user?.id;
+
+    // await YoutubeService.createPlayList(userId, playlistName);
+
+    res.status(201).json({ message: "Playlist created successfully" });
+  }
+
+  static async addPlaylistItem(req: Request, res: Response) {
+    const { url } = req.body;
+    const { id } = req.params;
+    // const userId = req.user?.id;
+    
+    // await YoutubeService.addPlayListItem(id,userId,extractVideo(url));
+  }
+
+  static async getPlaylist(req: Request, res: Response) {
+    const { id } = req.params;
   }
 }

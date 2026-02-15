@@ -13,10 +13,30 @@ datasource db {
   provider = "postgresql"
 }
 
-
 model User {
-  id        String   @id @default(uuid())
-  email     String   @unique
-  verified  Boolean  @default(false)
-  createdAt DateTime @default(now())
+  id        String         @id @default(uuid())
+  email     String         @unique
+  verified  Boolean        @default(false)
+  createdAt DateTime       @default(now())
+  playlists PlayList[]
+  items     PlayListItem[]
+}
+
+model PlayList {
+  id        String         @id
+  name      String
+  userId    String
+  user      User           @relation(fields: [userId], references: [id])
+  createdAt DateTime       @default(now())
+  items     PlayListItem[]
+}
+
+model PlayListItem {
+  id         String   @id @default(uuid())
+  url        String   @unique
+  userId     String
+  playListId String
+  playList   PlayList @relation(fields: [playListId], references: [id])
+  user       User     @relation(fields: [userId], references: [id])
+  createdAt  DateTime @default(now())
 }
