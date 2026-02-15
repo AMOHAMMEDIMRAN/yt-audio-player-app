@@ -1,7 +1,7 @@
 import youtubedl from "youtube-dl-exec";
 import type { Readable } from "stream";
-import { prisma } from "../database/db";
 import { AppError } from "../utils/appError";
+import { prisma } from "../database/db";
 
 export class YoutubeService {
   static getAudioStream(videoUrl: string): Readable {
@@ -12,7 +12,7 @@ export class YoutubeService {
     });
 
     if (!subprocess.stdout) {
-      throw new Error("Failed to create audio stream");
+      throw new AppError("Failed to create audio stream", 400);
     }
 
     subprocess.stderr?.on("data", (data: Buffer) => {
