@@ -1,6 +1,6 @@
+import { config } from "./config/settings";
 import { prisma } from "./database/db";
 import { app } from "./app";
-import { config } from "./config/settings"; // assuming you have env config
 import { redis } from "./config/redis";
 
 class Bootstrap {
