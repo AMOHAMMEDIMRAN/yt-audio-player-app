@@ -16,7 +16,6 @@ export class YoutubeController {
 
     const info = await YoutubeService.getVideoInfo(videoUrl);
 
-    // Save URL to history
     await YoutubeService.saveUrlToHistory(
       url,
       videoId,

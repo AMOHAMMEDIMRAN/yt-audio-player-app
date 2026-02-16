@@ -1,6 +1,7 @@
 import express from "express";
 import authRouter from "./routes/auth.route";
-import youtubeRouter from "./routes/youtube.route"
+import youtubeRouter from "./routes/youtube.route";
+import playlistRouter from "./routes/playlist.route";
 import helmet from "helmet";
 import cors from "cors";
 import { config } from "./config/settings";
@@ -27,3 +28,4 @@ app.use(
 
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/yt", youtubeRouter);
+app.use("/api/v1/playlists", playlistRouter);

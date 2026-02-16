@@ -87,4 +87,8 @@ export class YoutubeService {
       where: userId ? { userId } : {},
     });
   }
+
+  static async createPlayList(){
+    
+  }
 }
