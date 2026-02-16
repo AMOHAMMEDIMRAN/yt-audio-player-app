@@ -20,3 +20,16 @@ model User {
   verified  Boolean  @default(false)
   createdAt DateTime @default(now())
 }
+
+model UrlHistory {
+  id        String   @id @default(uuid())
+  url       String
+  videoId   String
+  title     String?
+  thumbnail String?
+  userId    String?
+  createdAt DateTime @default(now())
+
+  @@index([userId, createdAt(sort: Desc)])
+  @@index([createdAt(sort: Desc)])
+}

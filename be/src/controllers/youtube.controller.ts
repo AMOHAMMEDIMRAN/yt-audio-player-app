@@ -16,6 +16,15 @@ export class YoutubeController {
 
     const info = await YoutubeService.getVideoInfo(videoUrl);
 
+    // Save URL to history
+    await YoutubeService.saveUrlToHistory(
+      url,
+      videoId,
+      info.title,
+      info.thumbnail,
+      req.user?.id,
+    );
+
     res.setHeader("Content-Type", "audio/mpeg");
     res.setHeader(
       "Content-Disposition",
@@ -32,5 +41,24 @@ export class YoutubeController {
     });
 
     stream.pipe(res);
+  }
+
+  static async getHistory(req: Request, res: Response) {
+    const limit = parseInt(req.query.limit as string) || 20;
+    const history = await YoutubeService.getUrlHistory(req.user?.id, limit);
+
+    res.json({
+      success: true,
+      data: history,
+    });
+  }
+
+  static async clearHistory(req: Request, res: Response) {
+    await YoutubeService.clearUrlHistory(req.user?.id);
+
+    res.json({
+      success: true,
+      message: "History cleared successfully",
+    });
   }
 }
