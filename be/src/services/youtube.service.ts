@@ -1,6 +1,7 @@
 import youtubedl from "youtube-dl-exec";
 import type { Readable } from "stream";
 import { AppError } from "../utils/appError";
+import { prisma } from "../database/db";
 
 export class YoutubeService {
   static getAudioStream(videoUrl: string): Readable {
@@ -34,5 +35,56 @@ export class YoutubeService {
       lengthSeconds: String(info.duration),
       thumbnail: info.thumbnail,
     };
+  }
+
+  static async saveUrlToHistory(
+    url: string,
+    videoId: string,
+    title?: string,
+    thumbnail?: string,
+    userId?: string,
+  ) {
+    // Save the URL to history
+    await prisma.urlHistory.create({
+      data: {
+        url,
+        videoId,
+        title,
+        thumbnail,
+        userId,
+      },
+    });
+
+    // Keep only the last 20 URLs
+    const allHistory = await prisma.urlHistory.findMany({
+      where: userId ? { userId } : {},
+      orderBy: { createdAt: "desc" },
+    });
+
+    // If more than 20, delete the oldest ones
+    if (allHistory.length > 20) {
+      const toDelete = allHistory.slice(20);
+      await prisma.urlHistory.deleteMany({
+        where: {
+          id: {
+            in: toDelete.map((h) => h.id),
+          },
+        },
+      });
+    }
+  }
+
+  static async getUrlHistory(userId?: string, limit: number = 20) {
+    return await prisma.urlHistory.findMany({
+      where: userId ? { userId } : {},
+      orderBy: { createdAt: "desc" },
+      take: limit,
+    });
+  }
+
+  static async clearUrlHistory(userId?: string) {
+    await prisma.urlHistory.deleteMany({
+      where: userId ? { userId } : {},
+    });
   }
 }
