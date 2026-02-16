@@ -15,10 +15,11 @@ datasource db {
 
 
 model User {
-  id        String   @id @default(uuid())
-  email     String   @unique
-  verified  Boolean  @default(false)
-  createdAt DateTime @default(now())
+  id        String     @id @default(uuid())
+  email     String     @unique
+  verified  Boolean    @default(false)
+  createdAt DateTime   @default(now())
+  playlists Playlist[]
 }
 
 model UrlHistory {
@@ -33,3 +34,31 @@ model UrlHistory {
   @@index([userId, createdAt(sort: Desc)])
   @@index([createdAt(sort: Desc)])
 }
+
+model Playlist {
+  id          String         @id @default(uuid())
+  name        String
+  description String?
+  userId      String?
+  user        User?          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  items       PlaylistItem[]
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+
+  @@index([userId, createdAt(sort: Desc)])
+}
+
+model PlaylistItem {
+  id         String   @id @default(uuid())
+  playlistId String
+  playlist   Playlist @relation(fields: [playlistId], references: [id], onDelete: Cascade)
+  url        String
+  videoId    String
+  title      String?
+  thumbnail  String?
+  order      Int      @default(0)
+  addedAt    DateTime @default(now())
+
+  @@index([playlistId, order])
+}
+
